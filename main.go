@@ -10,28 +10,44 @@ import (
 )
 
 func main() {
-	html5 := `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>RentRoll Report Sample HTML</title>
-<link rel="stylesheet" type="text/css" href="style.css" />
-<link rel="stylesheet" type="text/css" href="report.css" />
-</head>
-<body>
-<div class="container">
-	<!-- <div class="sidebar">
-		<h2>This is sidebar content</h2>
-	</div> -->
-	<div class="main-block">
-	%s
-	</div>
-</div>
-</body>
-</html>
-`
-	var lorem = `Lorem ipsum dolor sit amet, elementum fermentum suspendisse, illum est curabitur a sem justo rhoncus. Ac iaculis nec amet nisl, scelerisque sed quis nec dignissim dolor tempor, pellentesque tortor phasellus ut, risus eros sed primis vestibulum, vestibulum viverra. Maecenas orci scelerisque. Lectus cursus lorem etiam adipisicing, enim per tellus, purus mauris id dapibus qui curabitur nam, tincidunt nec gravida curabitur.
-`
+	var html5 = `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		<title>RentRoll Sample Report</title>
+		<style>
+			html, body{
+				margin: 0;
+				padding: 0;
+				font-family: Helvetica, sans-serif;
+				font-size: 14px;
+				background: #FAFAFA;
+			}
+			div{
+				display: block;
+			}
+			.container{
+				background-color: rgba(0,0,0,0);
+				padding: 10px 25px;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="report.css" />
+		</head>
+		<body>
+		<div class="container">
+			%s
+		</div>
+		</body>
+		</html>`
+
+	const (
+		lorem = `Lorem ipsum dolor sit amet, elementum fermentum suspendisse,
+		illum est curabitur a sem justo rhoncus. Ac iaculis nec amet nisl,
+		scelerisque sed quis nec dignissim dolor tempor, pellentesque tortor phasellus ut,
+		risus eros sed primis vestibulum, vestibulum viverra. Maecenas orci scelerisque.
+		Lectus cursus lorem etiam adipisicing, enim per tellus,
+		purus mauris id dapibus qui curabitur nam, tincidunt nec gravida curabitur.`
+	)
 
 	var t gt.Table
 	t.Init()
@@ -65,16 +81,33 @@ func main() {
 	fmt.Println("Text File generated successfully for table.")
 
 	// generate html file
-	tableHTML, err := t.SprintTable(gt.TABLEOUTHTML)
-	tableHTML = fmt.Sprintf(html5, tableHTML)
+	c := []*gt.CSSProperty{}
+	c = append(c, &gt.CSSProperty{Name: "border", Value: "1px black solid"})
+	c = append(c, &gt.CSSProperty{Name: "color", Value: "red"})
+	t.SetRowCSS(1, c)
+	t.SetColWidth(1, 150, "px")
 
-	// write to html file
+	c = []*gt.CSSProperty{}
+	c = append(c, &gt.CSSProperty{Name: "color", Value: "blue"})
+	c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
+	c = append(c, &gt.CSSProperty{Name: "font-size", Value: "20px"})
+	t.SetTitleCSS(c)
+
+	c = []*gt.CSSProperty{}
+	c = append(c, &gt.CSSProperty{Name: "color", Value: "orange"})
+	c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
+	t.SetHeaderCSS(c)
+
+	tableHTML, err := t.SprintTable(gt.TABLEOUTHTML)
+	// fit content in html5
+	tableHTML = fmt.Sprintf(html5, tableHTML)
 	f, err := os.Create("table.html")
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 	defer f.Close()
+
 	// write formatted html output
 	f.WriteString(gohtml.Format(tableHTML))
 	fmt.Println("HTML File generated successfully for table.")

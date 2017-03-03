@@ -97,6 +97,8 @@ func main() {
 	c = append(c, &gt.CSSProperty{Name: "color", Value: "orange"})
 	c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
 	t.SetHeaderCSS(c)
+	c = append(c, &gt.CSSProperty{Name: "background-color", Value: "blue"})
+	t.SetHeaderCSS(c)
 
 	tableHTML, err := t.SprintTable(gt.TABLEOUTHTML)
 	// fit content in html5

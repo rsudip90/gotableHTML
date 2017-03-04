@@ -25,7 +25,7 @@ func main() {
 	t.SetTitle("Go Table")
 	t.AddColumn("Line No", 7, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
 	t.AddColumn("Unit", 14, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
-	t.AddColumn("Amount", 10, gt.CELLINT, gt.COLJUSTIFYLEFT)
+	t.AddColumn("Amount", 10, gt.CELLINT, gt.COLJUSTIFYRIGHT)
 	t.AddColumn("Description", 80, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
 	rs := t.CreateRowset()
 	for i := 0; i < 5; i++ {
@@ -69,6 +69,10 @@ func main() {
 	t.SetHeaderCSS(c)
 	c = append(c, &gt.CSSProperty{Name: "background-color", Value: "blue"})
 	t.SetHeaderCSS(c)
+
+	c = []*gt.CSSProperty{}
+	c = append(c, &gt.CSSProperty{Name: "vertical-align", Value: "top"})
+	t.SetAllCellCSS(c)
 
 	tableHTML, err := t.SprintTable(gt.TABLEOUTHTML)
 	if err != nil {

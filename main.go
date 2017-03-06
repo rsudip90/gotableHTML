@@ -12,7 +12,8 @@ import (
 func main() {
 
 	const (
-		lorem = `Lorem ipsum dolor sit amet, elementum fermentum suspendisse,illum est curabitur a sem justo rhoncus. Ac iaculis nec amet nisl,
+		lorem = `Lorem      ipsum dolor sit amet, elementum
+		fermentum suspendisse,illum est curabitur a sem justo rhoncus. Ac iaculis nec amet nisl,
 		scelerisque sed quis nec dignissim dolor tempor, pellentesque tortor phasellus ut,
 		risus eros sed primis vestibulum, vestibulum viverra. Maecenas orci scelerisque.
 		Lectus cursus lorem etiam adipisicing, enim per tellus,

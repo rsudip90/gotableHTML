@@ -56,7 +56,7 @@ func main() {
 	c = append(c, &gt.CSSProperty{Name: "border", Value: "1px black solid"})
 	c = append(c, &gt.CSSProperty{Name: "color", Value: "red"})
 	t.SetRowCSS(1, c)
-	t.SetColWidth(1, 150, "px")
+	t.SetColHTMLWidth(1, 150, "px")
 
 	c = []*gt.CSSProperty{}
 	c = append(c, &gt.CSSProperty{Name: "color", Value: "blue"})
@@ -70,6 +70,11 @@ func main() {
 	t.SetHeaderCSS(c)
 	c = append(c, &gt.CSSProperty{Name: "background-color", Value: "blue"})
 	t.SetHeaderCSS(c)
+
+	c = []*gt.CSSProperty{}
+	c = append(c, &gt.CSSProperty{Name: "color", Value: "white"})
+	c = append(c, &gt.CSSProperty{Name: "background-color", Value: "black"})
+	t.SetSection1CSS(c)
 
 	c = []*gt.CSSProperty{}
 	c = append(c, &gt.CSSProperty{Name: "vertical-align", Value: "top"})

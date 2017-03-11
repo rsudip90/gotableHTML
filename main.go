@@ -96,4 +96,31 @@ func main() {
 	// write formatted html output
 	f.WriteString(gohtml.Format(tableHTML))
 	fmt.Println("HTML File generated successfully for table.")
+
+	var tbl gt.Table
+	tbl.Init()
+	tbl.SetSection1(lorem)
+	tbl.SetTitle("Accord Sample Report")
+	tbl.AddColumn("Line No", 7, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
+	tbl.AddColumn("Unit", 14, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
+	tbl.AddColumn("Amount", 10, gt.CELLINT, gt.COLJUSTIFYRIGHT)
+	tbl.AddColumn("Description", 80, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
+	rs = tbl.CreateRowset()
+	for i := 0; i < 25; i++ {
+		tbl.AddRow()
+		tbl.Puts(-1, 0, strconv.Itoa(i+1))
+		tbl.Puts(-1, 1, "Unit - "+strconv.Itoa(i+1))
+		tbl.Puti(-1, 2, int64(i*1000))
+		tbl.Puts(-1, 3, lorem)
+		tbl.AppendToRowset(rs, i)
+	}
+	tbl.AddLineAfter(tbl.RowCount() - 1)
+	tbl.InsertSumRowsetCols(rs, tbl.RowCount(), []int{2})
+	// tbl.SetAllCellCSS([]*gt.CSSProperty{{Name: "vertical-align", Value: "top"}})
+	pdf, err := tbl.SprintTable(gt.TABLEOUTPDF)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("PDF file generated successfully for table at ", pdf)
 }

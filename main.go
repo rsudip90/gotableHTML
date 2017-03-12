@@ -59,9 +59,9 @@ func main() {
 	t.SetColHTMLWidth(1, 150, "px")
 
 	c = []*gt.CSSProperty{}
-	c = append(c, &gt.CSSProperty{Name: "color", Value: "blue"})
-	c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
-	c = append(c, &gt.CSSProperty{Name: "font-size", Value: "20px"})
+	// c = append(c, &gt.CSSProperty{Name: "color", Value: "blue"})
+	// c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
+	// c = append(c, &gt.CSSProperty{Name: "font-size", Value: "20px"})
 	t.SetTitleCSS(c)
 
 	c = []*gt.CSSProperty{}
@@ -99,7 +99,8 @@ func main() {
 
 	var tbl gt.Table
 	tbl.Init()
-	tbl.SetSection1(lorem)
+	tbl.SetSection1("Section1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\t")
+	tbl.SetSection2("Section2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\t")
 	tbl.SetTitle("Accord Sample Report")
 	tbl.AddColumn("Line No", 7, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
 	tbl.AddColumn("Unit", 14, gt.CELLSTRING, gt.COLJUSTIFYLEFT)

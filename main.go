@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	gt "gotable"
+	"gotable"
 	"os"
 	"strconv"
-
-	"github.com/yosssi/gohtml"
 )
 
 func main() {
@@ -20,14 +18,14 @@ func main() {
 		purus mauris id dapibus qui curabitur nam, tincidunt nec gravida curabitur.`
 	)
 
-	var t gt.Table
+	var t gotable.Table
 	t.Init()
 	t.SetSection1(lorem)
 	t.SetTitle("Go Table")
-	t.AddColumn("Line No", 7, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
-	t.AddColumn("Unit", 14, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
-	t.AddColumn("Amount", 10, gt.CELLINT, gt.COLJUSTIFYRIGHT)
-	t.AddColumn("Description", 80, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
+	t.AddColumn("Line No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
+	t.AddColumn("Unit", 14, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
+	t.AddColumn("Amount", 10, gotable.CELLINT, gotable.COLJUSTIFYRIGHT)
+	t.AddColumn("Description", 80, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	rs := t.CreateRowset()
 	for i := 0; i < 5; i++ {
 		t.AddRow()
@@ -40,72 +38,102 @@ func main() {
 	t.AddLineAfter(t.RowCount() - 1)
 	t.InsertSumRowsetCols(rs, t.RowCount(), []int{2})
 
+	// ==========
+	// TEXT Output
+	// ==========
+
 	// generate text file
-	tableText, err := t.SprintTable(gt.TABLEOUTTEXT)
 	tf, err := os.Create("table.txt")
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Printf("Error while creating TEXT output file: %s\n", err.Error())
 		os.Exit(1)
 	}
 	defer tf.Close()
-	tf.WriteString(tableText)
+
+	if err := t.SprintTable(tf); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 	fmt.Println("Text File generated successfully for table.")
 
-	// generate html file
-	c := []*gt.CSSProperty{}
-	c = append(c, &gt.CSSProperty{Name: "border", Value: "1px black solid"})
-	c = append(c, &gt.CSSProperty{Name: "color", Value: "red"})
+	// ==========
+	// CSV Output
+	// ==========
+
+	// generate text file
+	cf, err := os.Create("table.csv")
+	if err != nil {
+		fmt.Printf("Error while creating CSV output file: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer cf.Close()
+
+	if err := t.CSVprintTable(cf); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("CSV File generated successfully for table.")
+
+	// apply some css for html output
+	c := []*gotable.CSSProperty{}
+	c = append(c, &gotable.CSSProperty{Name: "border", Value: "1px black solid"})
+	c = append(c, &gotable.CSSProperty{Name: "color", Value: "red"})
 	t.SetRowCSS(1, c)
 	t.SetColHTMLWidth(1, 150, "px")
 
-	c = []*gt.CSSProperty{}
-	// c = append(c, &gt.CSSProperty{Name: "color", Value: "blue"})
-	// c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
-	// c = append(c, &gt.CSSProperty{Name: "font-size", Value: "20px"})
+	c = []*gotable.CSSProperty{}
+	// c = append(c, &gotable.CSSProperty{Name: "color", Value: "blue"})
+	// c = append(c, &gotable.CSSProperty{Name: "font-style", Value: "italic"})
+	// c = append(c, &gotable.CSSProperty{Name: "font-size", Value: "20px"})
 	t.SetTitleCSS(c)
 
-	c = []*gt.CSSProperty{}
-	c = append(c, &gt.CSSProperty{Name: "color", Value: "orange"})
-	c = append(c, &gt.CSSProperty{Name: "font-style", Value: "italic"})
+	c = []*gotable.CSSProperty{}
+	c = append(c, &gotable.CSSProperty{Name: "color", Value: "orange"})
+	c = append(c, &gotable.CSSProperty{Name: "font-style", Value: "italic"})
 	t.SetHeaderCSS(c)
-	c = append(c, &gt.CSSProperty{Name: "background-color", Value: "blue"})
+	c = append(c, &gotable.CSSProperty{Name: "background-color", Value: "blue"})
 	t.SetHeaderCSS(c)
 
-	c = []*gt.CSSProperty{}
-	c = append(c, &gt.CSSProperty{Name: "color", Value: "white"})
-	c = append(c, &gt.CSSProperty{Name: "background-color", Value: "black"})
+	c = []*gotable.CSSProperty{}
+	c = append(c, &gotable.CSSProperty{Name: "color", Value: "white"})
+	c = append(c, &gotable.CSSProperty{Name: "background-color", Value: "black"})
 	t.SetSection1CSS(c)
 
-	c = []*gt.CSSProperty{}
-	c = append(c, &gt.CSSProperty{Name: "vertical-align", Value: "top"})
+	c = []*gotable.CSSProperty{}
+	c = append(c, &gotable.CSSProperty{Name: "vertical-align", Value: "top"})
 	t.SetAllCellCSS(c)
 
-	tableHTML, err := t.SprintTable(gt.TABLEOUTHTML)
-	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
+	// ==========
+	// HTML Output
+	// ==========
 
-	f, err := os.Create("table.html")
+	hf, err := os.Create("table.html")
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Printf("Error while creating HTML output file: %s\n", err.Error())
 		os.Exit(1)
 	}
-	defer f.Close()
+	defer hf.Close()
 
 	// write formatted html output
-	f.WriteString(gohtml.Format(tableHTML))
+	if err = t.HTMLprintTable(hf); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 	fmt.Println("HTML File generated successfully for table.")
 
-	var tbl gt.Table
+	// ==========
+	// PDF Output
+	// ==========
+
+	var tbl gotable.Table
 	tbl.Init()
 	tbl.SetSection1("Section1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\t")
 	tbl.SetSection2("Section2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\t")
 	tbl.SetTitle("Accord Sample Report")
-	tbl.AddColumn("Line No", 7, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
-	tbl.AddColumn("Unit", 14, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
-	tbl.AddColumn("Amount", 10, gt.CELLINT, gt.COLJUSTIFYRIGHT)
-	tbl.AddColumn("Description", 80, gt.CELLSTRING, gt.COLJUSTIFYLEFT)
+	tbl.AddColumn("Line No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
+	tbl.AddColumn("Unit", 14, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
+	tbl.AddColumn("Amount", 10, gotable.CELLINT, gotable.COLJUSTIFYRIGHT)
+	tbl.AddColumn("Description", 80, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	rs = tbl.CreateRowset()
 	for i := 0; i < 25; i++ {
 		tbl.AddRow()
@@ -117,11 +145,17 @@ func main() {
 	}
 	tbl.AddLineAfter(tbl.RowCount() - 1)
 	tbl.InsertSumRowsetCols(rs, tbl.RowCount(), []int{2})
-	// tbl.SetAllCellCSS([]*gt.CSSProperty{{Name: "vertical-align", Value: "top"}})
-	pdf, err := tbl.SprintTable(gt.TABLEOUTPDF)
+	// tbl.SetAllCellCSS([]*gotable.CSSProperty{{Name: "vertical-align", Value: "top"}})
+	pf, err := os.Create("table.pdf")
 	if err != nil {
+		fmt.Printf("Error while creating PDF output file: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer pf.Close()
+
+	if err := tbl.PDFprintTable(pf); err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	fmt.Println("PDF file generated successfully for table at ", pdf)
+	fmt.Println("PDF file generated successfully for table.")
 }

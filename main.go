@@ -20,8 +20,10 @@ func main() {
 
 	var t gotable.Table
 	t.Init()
-	t.SetSection1(lorem)
-	t.SetTitle("Go Table")
+	tbl.SetTitle("Go Table")
+	tbl.SetSection1("Section One")
+	tbl.SetSection1("Section Two")
+
 	t.AddColumn("Line No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	t.AddColumn("Unit", 14, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	t.AddColumn("Amount", 10, gotable.CELLINT, gotable.COLJUSTIFYRIGHT)
@@ -50,7 +52,7 @@ func main() {
 	}
 	defer tf.Close()
 
-	if err := t.SprintTable(tf); err != nil {
+	if err := t.FprintTable(tf); err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}

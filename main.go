@@ -20,9 +20,9 @@ func main() {
 
 	var t gotable.Table
 	t.Init()
-	tbl.SetTitle("Go Table")
-	tbl.SetSection1("Section One")
-	tbl.SetSection1("Section Two")
+	t.SetTitle("Go Table")
+	t.SetSection1("Section One")
+	t.SetSection1("Section Two")
 
 	t.AddColumn("Line No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	t.AddColumn("Unit", 14, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
@@ -109,7 +109,7 @@ func main() {
 	// HTML Output
 	// ==========
 
-	hf, err := os.Create("table.html")
+	hf, err := os.Create("tableCSS.html")
 	if err != nil {
 		fmt.Printf("Error while creating HTML output file: %s\n", err.Error())
 		os.Exit(1)
@@ -121,7 +121,7 @@ func main() {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	fmt.Println("HTML File generated successfully for table.")
+	fmt.Println("HTML File with custom css generated successfully for table.")
 
 	// ==========
 	// PDF Output
@@ -132,9 +132,9 @@ func main() {
 	tbl.SetSection1("Section1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\t")
 	tbl.SetSection2("Section2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\t")
 	tbl.SetTitle("Accord Sample Report")
-	tbl.AddColumn("Line No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
+	tbl.AddColumn("No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	tbl.AddColumn("Unit", 14, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
-	tbl.AddColumn("Amount", 10, gotable.CELLINT, gotable.COLJUSTIFYRIGHT)
+	tbl.AddColumn("Amount", 6, gotable.CELLINT, gotable.COLJUSTIFYRIGHT)
 	tbl.AddColumn("Description", 80, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	rs = tbl.CreateRowset()
 	for i := 0; i < 25; i++ {
@@ -147,7 +147,9 @@ func main() {
 	}
 	tbl.AddLineAfter(tbl.RowCount() - 1)
 	tbl.InsertSumRowsetCols(rs, tbl.RowCount(), []int{2})
-	// tbl.SetAllCellCSS([]*gotable.CSSProperty{{Name: "vertical-align", Value: "top"}})
+
+	tbl.TightenColumns()
+
 	pf, err := os.Create("table.pdf")
 	if err != nil {
 		fmt.Printf("Error while creating PDF output file: %s\n", err.Error())
@@ -160,4 +162,18 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("PDF file generated successfully for table.")
+
+	hf, err = os.Create("table.html")
+	if err != nil {
+		fmt.Printf("Error while creating HTML output file: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer hf.Close()
+
+	// write formatted html output
+	if err = tbl.HTMLprintTable(hf); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("HTML File generated successfully for table.")
 }

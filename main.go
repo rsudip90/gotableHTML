@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"gotable"
 	"os"
@@ -140,7 +141,7 @@ func main() {
 	for i := 0; i < 25; i++ {
 		tbl.AddRow()
 		tbl.Puts(-1, 0, strconv.Itoa(i+1))
-		tbl.Puts(-1, 1, "Unit - "+strconv.Itoa(i+1))
+		tbl.Puts(-1, 1, "Unit-"+strconv.Itoa(i+1))
 		tbl.Puti(-1, 2, int64(i*1000))
 		tbl.Puts(-1, 3, lorem)
 		tbl.AppendToRowset(rs, i)
@@ -176,4 +177,30 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("HTML File generated successfully for table.")
+
+	// ============
+	// custom html template
+	// ===========
+	var customHTMLBuffer bytes.Buffer
+	for i := 0; i < 10; i++ {
+		var temp bytes.Buffer
+		var t gotable.Table
+		t = tbl
+		if i == 0 {
+			t.SetContainer("first_container")
+		} else if i == 9 {
+			t.SetContainer("last_container")
+		} else {
+			t.SetContainer("middle_container")
+		}
+		t.HTMLprintTable(&temp)
+		customHTMLBuffer.Write(temp.Bytes())
+	}
+	chf, err := os.Create("customHTML.html")
+	if err != nil {
+		fmt.Printf("Error while creating HTML output file: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer chf.Close()
+	customHTMLBuffer.WriteTo(chf)
 }

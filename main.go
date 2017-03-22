@@ -6,6 +6,8 @@ import (
 	"gotable"
 	"os"
 	"strconv"
+
+	"github.com/yosssi/gohtml"
 )
 
 func main() {
@@ -187,20 +189,21 @@ func main() {
 		var t gotable.Table
 		t = tbl
 		if i == 0 {
-			t.SetContainer("first_container")
+			t.SetHTMLTemplate("templates/first.html")
 		} else if i == 9 {
-			t.SetContainer("last_container")
+			t.SetHTMLTemplate("templates/last.tmpl")
 		} else {
-			t.SetContainer("middle_container")
+			t.SetHTMLTemplate("templates/middle.html")
 		}
 		t.HTMLprintTable(&temp)
 		customHTMLBuffer.Write(temp.Bytes())
 	}
-	chf, err := os.Create("customHTML.html")
+	chf, err := os.Create("customTemplateHTML.html")
 	if err != nil {
 		fmt.Printf("Error while creating HTML output file: %s\n", err.Error())
 		os.Exit(1)
 	}
 	defer chf.Close()
-	customHTMLBuffer.WriteTo(chf)
+	chf.WriteString(gohtml.Format(customHTMLBuffer.String()))
+	fmt.Println("HTML file with custom template path created successfully.")
 }

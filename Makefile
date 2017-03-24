@@ -4,8 +4,8 @@ reports:
 	golint *.go
 	go vet *.go
 	go build
-	cp ${GOTABLE}/report.css .
-	cp ${GOTABLE}/table.tmpl .
+	cp ${GOTABLE}/gotable.css .
+	cp ${GOTABLE}/gotable.tmpl .
 
 test:
 	./gotableReports

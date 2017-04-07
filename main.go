@@ -11,14 +11,13 @@ import (
 	"github.com/yosssi/gohtml"
 )
 
-
 var pdfProps = []*gotable.PDFProperty{
-	//
-	// {Option: "--disable-smart-shrinking"},
+	// smart shrinking
+	{Option: "--disable-smart-shrinking"},
 	// top margin
 	{Option: "-T", Value: "15"},
 	// use custom dpi setting
-	{Option: "--dpi", Value: "320"},
+	{Option: "--dpi", Value: "256"},
 	// header center content
 	{Option: "--header-center", Value: "Report Table"},
 	// header font size

@@ -42,6 +42,12 @@ func main() {
 	}
 	t.AddLineAfter(t.RowCount() - 1)
 	t.InsertSumRowsetCols(rs, t.RowCount(), []int{2})
+	t.AddLineAfter(t.RowCount() - 1)
+	t.AddRow()
+	t.Puts(-1, 0, "lastRow")
+	t.Puts(-1, 1, "Unit - "+"LastRow")
+	t.Puti(-1, 2, int64(1000000))
+	t.Puts(-1, 3, lorem)
 
 	// ==========
 	// TEXT Output
@@ -84,7 +90,8 @@ func main() {
 	c = append(c, &gotable.CSSProperty{Name: "border", Value: "1px black solid"})
 	c = append(c, &gotable.CSSProperty{Name: "color", Value: "red"})
 	t.SetRowCSS(1, c)
-	t.SetColHTMLWidth(1, 150, "px")
+	// FIX the unit coversation bug
+	t.SetColHTMLWidth(1, 15, "px")
 
 	c = []*gotable.CSSProperty{}
 	// c = append(c, &gotable.CSSProperty{Name: "color", Value: "blue"})
@@ -132,13 +139,28 @@ func main() {
 
 	var tbl gotable.Table
 	tbl.Init()
-	tbl.SetSection1("Section1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\tSection1\t")
-	tbl.SetSection2("Section2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\tSection2\t")
+
+	tbl.SetSection1("Section1\tSection1\tSection1\tSection1\tSection1\t")
+	tbl.SetSection2("Section2\tSection2\tSection2\tSection2\tSection2\t")
 	tbl.SetTitle("Accord Sample Report")
 	tbl.AddColumn("No", 7, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	tbl.AddColumn("Unit", 14, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
 	tbl.AddColumn("Amount", 6, gotable.CELLINT, gotable.COLJUSTIFYRIGHT)
 	tbl.AddColumn("Description", 80, gotable.CELLSTRING, gotable.COLJUSTIFYLEFT)
+
+	bf, err := os.Create("tableBlank.html")
+	if err != nil {
+		fmt.Printf("Error while creating PDF output file: %s\n", err.Error())
+		os.Exit(1)
+	}
+	defer bf.Close()
+
+	if err := tbl.HTMLprintTable(bf); err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("BLANK file generated successfully for table.")
+
 	rs = tbl.CreateRowset()
 	for i := 0; i < 25; i++ {
 		tbl.AddRow()

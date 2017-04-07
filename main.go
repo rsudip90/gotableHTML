@@ -6,9 +6,44 @@ import (
 	"gotable"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/yosssi/gohtml"
 )
+
+
+var pdfProps = []*gotable.PDFProperty{
+	//
+	// {Option: "--disable-smart-shrinking"},
+	// top margin
+	{Option: "-T", Value: "15"},
+	// use custom dpi setting
+	{Option: "--dpi", Value: "320"},
+	// header center content
+	{Option: "--header-center", Value: "Report Table"},
+	// header font size
+	{Option: "--header-font-size", Value: "7"},
+	// header font
+	{Option: "--header-font-name", Value: "opensans"},
+	// header spacing
+	{Option: "--header-spacing", Value: "3"},
+	// bottom margin
+	{Option: "-B", Value: "15"},
+	// footer spacing
+	{Option: "--footer-spacing", Value: "5"},
+	// footer font
+	{Option: "--footer-font-name", Value: "opensans"},
+	// footer font size
+	{Option: "--footer-font-size", Value: "7"},
+	// footer left content
+	{Option: "--footer-left", Value: time.Now().Format(gotable.DATETIMEFMT)},
+	// footer right content
+	{Option: "--footer-right", Value: "Page [page] of [toPage]"},
+	// page size
+	{Option: "--page-size", Value: "Letter"},
+	// orientation
+	{Option: "--orientation", Value: "Landscape"},
+}
 
 func main() {
 
@@ -160,7 +195,7 @@ func main() {
 	}
 	defer pf.Close()
 
-	if err := tbl.PDFprintTable(pf); err != nil {
+	if err := tbl.PDFprintTable(pf, pdfProps); err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
